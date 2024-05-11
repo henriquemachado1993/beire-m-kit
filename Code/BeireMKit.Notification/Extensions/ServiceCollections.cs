@@ -1,10 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BeireMKit.Notification.Interfaces;
+﻿using BeireMKit.Notification.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeireMKit.Notification.Extensions
 {
@@ -16,7 +11,8 @@ namespace BeireMKit.Notification.Extensions
         /// <param name="services"></param>
         public static void ConfigureNotification(this IServiceCollection services)
         {
-            services.AddScoped(typeof(INotification), provider => provider.GetService(typeof(NotificationContext)));
+            //services.AddScoped(typeof(INotification), provider => provider.GetService(typeof(NotificationContext)));
+            services.AddScoped(typeof(INotification), typeof(Notification));
         }
     }
 }

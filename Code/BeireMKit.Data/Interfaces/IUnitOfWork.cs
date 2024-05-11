@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BeireMKit.Data.Interfaces
+﻿namespace BeireMKit.Data.Interfaces
 {
     public interface IUnitOfWork
     {
