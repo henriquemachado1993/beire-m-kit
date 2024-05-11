@@ -8,9 +8,9 @@ namespace BeireMKit.Data.Repositories
     public class Repository<T> : IRepository<T>
         where T : BaseEntity
     {
-        protected readonly IDbContext _context;
+        protected readonly IBaseDbContext _context;
 
-        public Repository(IDbContext context)
+        public Repository(IBaseDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

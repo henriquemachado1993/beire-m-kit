@@ -30,6 +30,33 @@ namespace BeireMKit.Domain.BaseModels
             return result;
         }
 
+        public static BaseResult<T> CreateInvalidResult(T? model = default, List<MessageResult>? messages = null)
+        {
+            var result = new BaseResult<T> { Data = model };
+            result.AddError(messages);
+            return result;
+        }
+
+        public static BaseResult<T> CreateInvalidResult(List<MessageResult> messages)
+        {
+            var result = new BaseResult<T> { Data = default };
+            result.AddError(messages);
+            return result;
+        }
+
+        public void AddError(Exception? exception)
+        {
+            if (exception != null)
+            {
+                Messages.Add(new MessageResult
+                {
+                    Key = Guid.NewGuid().ToString(),
+                    Message = exception.Message,
+                    Type = MessageType.Error
+                });
+            }
+        }
+
         public void AddError(string? message, Exception? exception = null)
         {
             Messages.Add(new MessageResult

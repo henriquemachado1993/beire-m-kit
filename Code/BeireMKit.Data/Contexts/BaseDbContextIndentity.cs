@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BeireMKit.Data.Contexts
 {
-    internal class BaseDbContextIndentity<TContext, TUser> : IDbContext 
+    public class BaseDbContextIndentity<TContext, TUser> : IBaseDbContext 
         where TContext : IdentityDbContext<TUser>
         where TUser : IdentityUser
     {

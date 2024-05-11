@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BeireMKit.Data.Interfaces
 {
-    public interface IDbContext
+    public interface IBaseDbContext
     {
         DbSet<T> Set<T>() where T : class;
         int SaveChanges();

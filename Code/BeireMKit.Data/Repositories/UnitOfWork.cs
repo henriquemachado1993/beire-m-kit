@@ -4,10 +4,10 @@ namespace BeireMKit.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        protected readonly IDbContext _context;
+        protected readonly IBaseDbContext _context;
         private bool _disposed;
 
-        public UnitOfWork(IDbContext context)
+        public UnitOfWork(IBaseDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

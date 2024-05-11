@@ -20,7 +20,7 @@ namespace BeireMKit.Data.Extensions
         public static IServiceCollection ConfigureDbContext<TContext>(this IServiceCollection services)
             where TContext : DbContext
         {
-            services.AddScoped(typeof(IDbContext), typeof(BaseDbContext<TContext>));
+            services.AddScoped(typeof(IBaseDbContext), typeof(BaseDbContext<TContext>));
             return services;
         }
 
@@ -28,7 +28,7 @@ namespace BeireMKit.Data.Extensions
             where TContext : IdentityDbContext<TUser>
             where TUser : IdentityUser
         {
-            services.AddScoped(typeof(IDbContext), typeof(BaseDbContextIndentity<TContext, TUser>));
+            services.AddScoped(typeof(IBaseDbContext), typeof(BaseDbContextIndentity<TContext, TUser>));
             return services;
         }
     }

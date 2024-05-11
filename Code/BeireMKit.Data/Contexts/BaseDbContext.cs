@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BeireMKit.Data.Contexts
 {
-    public class BaseDbContext<TContext> : IDbContext where TContext : DbContext
+    public class BaseDbContext<TContext> : IBaseDbContext
+        where TContext : DbContext
     {
         private readonly TContext _context;
 
