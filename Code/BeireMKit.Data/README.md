@@ -36,3 +36,27 @@ Certifique-se de ter instalado o .NET Core 6 SDK em sua máquina antes de começ
         services.AddScoped<IBaseDbContext, YourContext>();
     }
     ```
+    * Exemplo de uso:
+    ```
+    public class Service : IService
+    {
+        private readonly IUnitOfWork _uow;
+        private readonly IRepository<Entity> _repository;
+
+        public Service(
+            IUnitOfWork uow,
+            IRepository<Entity> repository,
+            )
+        {
+            _uow = uow;
+            _repository = repository;
+        }
+
+        public BaseResult<Entity> Add(Entity entity)
+        {
+            var result = _repository.Add(entity);
+            _uow.Commit();
+            return BaseResult<Entity>.CreateValidResult(result);
+        }
+    }
+    ```
