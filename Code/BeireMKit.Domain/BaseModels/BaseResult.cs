@@ -23,6 +23,13 @@ namespace BeireMKit.Domain.BaseModels
             return new BaseResult<T> { Data = model };
         }
 
+        public static BaseResult<T> CreateValidResult(T? model = default, string? message = null)
+        {
+            var result = new BaseResult<T> { Data = model };
+            result.AddError(message);
+            return result;
+        }
+
         public static BaseResult<T> CreateInvalidResult(T? model = default, string? message = null, Exception? exception = null)
         {
             var result = new BaseResult<T> { Data = model };
@@ -62,7 +69,7 @@ namespace BeireMKit.Domain.BaseModels
             Messages.Add(new MessageResult
             {
                 Key = Guid.NewGuid().ToString(),
-                Message = message ?? exception?.Message,
+                Message = message,
                 Type = MessageType.Error
             });
 
@@ -75,6 +82,17 @@ namespace BeireMKit.Domain.BaseModels
                     Type = MessageType.Error
                 });
             }
+        }
+
+        public void AddError(string? message, string typeCustom)
+        {
+            Messages.Add(new MessageResult
+            {
+                Key = Guid.NewGuid().ToString(),
+                Message = message,
+                Type = MessageType.Error,
+                TypeCustom = typeCustom
+            });
         }
 
         public void AddError(MessageResult message, Exception? exception = null)
