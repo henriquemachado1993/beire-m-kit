@@ -59,7 +59,7 @@ if ($apiKey -eq $null) {
     return
 }
 
-$projectsPath = "..\Code"
+$projectsPath = "Code"
 $projectFiles = @(
     "$projectsPath\BeireMKit.Data\BeireMKit.Data.csproj",
     "$projectsPath\BeireMKit.Domain\BeireMKit.Domain.csproj",
