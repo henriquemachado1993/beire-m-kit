@@ -1,0 +1,1 @@
+.\BuildAndPublishOnNuget.ps1 -settingsJsonFile "..\settings.json"

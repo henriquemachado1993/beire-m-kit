@@ -1,48 +1,48 @@
 param (
     [Parameter(Mandatory=$true)]
-    [string]$apiKeyJsonFile
+    [string]$settingsJsonFile
 )
 
-function Get-ApiKeyFromJson($jsonFilePath) {
+function Get-settingsFromJson($jsonFilePath) {
     try {
         $jsonData = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json
-        return $jsonData.api_key
+        return $jsonData
     } catch {
-        Write-Host "Error reading API key from JSON file: $_"
+        Write-Host "Error reading API Settings from JSON file: $_"
         return $null
     }
 }
 
-function UpdateAndPublishProject($projectPath, $projectFile, $apiKey)
+function PublishProject($project)
 {
     try {
         
-        Write-Host "Project: $($projectFile)"
+        Write-Host "Project name: $($project.name)"
 
-        $xml = [Xml] (Get-Content $projectFile)
+        $xml = [Xml] (Get-Content $project.pathSolution)
         $currentVersion = [Version] $xml.Project.PropertyGroup.Version
         Write-Host "Current version: $currentVersion"
         
         $newVersion = $currentVersion.Major, $currentVersion.Minor, ($currentVersion.Build + 1) -join '.'
-        $csprojContent = Get-Content $projectFile
-        $csprojContent -replace "<Version>$currentVersion</Version>", "<Version>$newVersion</Version>" | Set-Content $projectFile
+        $csprojContent = Get-Content $project.pathSolution
+        $csprojContent -replace "<Version>$currentVersion</Version>", "<Version>$newVersion</Version>" | Set-Content $project.pathSolution
 
-        $xml = [Xml] (Get-Content $projectFile)
+        $xml = [Xml] (Get-Content $project.pathSolution)
         $newVersion2 = [Version] $xml.Project.PropertyGroup.Version
         Write-Host "New version: $newVersion2"
 
         Write-Host "Compiling project..."
-        $buildResult = dotnet build --configuration Release $projectFile
+        $buildResult = dotnet build --configuration Release $project.pathSolution
         
         Write-Host "Packing project..."
-        $packResult = dotnet pack --configuration Release $projectFile
+        $packResult = dotnet pack --configuration Release $project.pathSolution
         
-        $pathToBin = (Get-Item $projectFile).Directory.Name
-        $packageName = [System.IO.Path]::GetFileNameWithoutExtension($projectFile)
-        $packagePath = "$projectPath\$pathToBin\bin\Release\$packageName.$newVersion.nupkg"
+        $pathToBin = (Get-Item $project.pathSolution).Directory.Name
+        $packageName = [System.IO.Path]::GetFileNameWithoutExtension($project.pathSolution)
+        $packagePath = "$($project.basePath)\$pathToBin\bin\Release\$packageName.$newVersion.nupkg"
 
         Write-Host "Pushing package to NuGet..."
-        $nugetResult = dotnet nuget push $packagePath --api-key $apiKey --source https://api.nuget.org/v3/index.json
+        $nugetResult = dotnet nuget push $packagePath --api-key $settings.apiKey --source https://api.nuget.org/v3/index.json
         Write-Host ""
         Write-Host "$($nugetResult)"
 
@@ -53,23 +53,21 @@ function UpdateAndPublishProject($projectPath, $projectFile, $apiKey)
     }
 }
 
-$apiKey = Get-ApiKeyFromJson -jsonFilePath $apiKeyJsonFile
-if ($apiKey -eq $null) {
+$settings = Get-settingsFromJson -jsonFilePath $settingsJsonFile
+if ($settings.apiKey -eq $null) {
     Write-Host "Failed to retrieve API key from JSON file."
     return
 }
 
-$projectsPath = "Code"
-$projectFiles = @(
-    "$projectsPath\BeireMKit.Data\BeireMKit.Data.csproj",
-    "$projectsPath\BeireMKit.Domain\BeireMKit.Domain.csproj",
-    "$projectsPath\BeireMKit.Notification\BeireMKit.Notification.csproj"
-)
+if ($settings.projects -eq $null) {
+    Write-Host "Failed to retrieve projects from JSON file."
+    return
+}
 
-foreach ($projectFile in $projectFiles) {
-    $publishThisProject = Read-Host "Do you want to publish $($projectFile)? (Y/N)"
+foreach ($project in $settings.projects) {
+    $publishThisProject = Read-Host "Do you want to publish $($project.name)? (Y/N)"
     if ($publishThisProject -ne "Y") {
         continue
     }
-    UpdateAndPublishProject $projectsPath $projectFile $apiKey
+    PublishProject $project
 }

@@ -1,0 +1,10 @@
+{
+  "apiKey": "yourApikeyNuget",
+  "projects": [
+    {
+      "name": "ProjectName",
+      "basePath": "basePath",
+      "pathSolution": "pathSolution"
+    }
+  ]
+}
