@@ -5,13 +5,13 @@ namespace BeireMKit.Domain.Extensions
     public static class ExpressionExtension
     {
         public static Expression<Func<T, bool>> AndAlso<T>(
-        this Expression<Func<T, bool>> left,
-        Expression<Func<T, bool>> right)
+            this Expression<Func<T, bool>> left,
+            Expression<Func<T, bool>> right)
         {
-            var parameterReplaceVisitor = new ParameterReplaceVisitor(left.Parameters[0], right.Parameters[0]);
-            var rewrittenRight = parameterReplaceVisitor.Visit(right.Body);
-            var andAlsoExpression = Expression.AndAlso(left.Body, rewrittenRight);
-            return Expression.Lambda<Func<T, bool>>(andAlsoExpression, left.Parameters);
+            var visitor = new ParameterReplaceVisitor(right.Parameters[0], left.Parameters[0]);
+            var rewrittenRight = visitor.Visit(right.Body);
+            var andExpression = Expression.AndAlso(left.Body, rewrittenRight);
+            return Expression.Lambda<Func<T, bool>>(andExpression, left.Parameters);
         }
     }
 
