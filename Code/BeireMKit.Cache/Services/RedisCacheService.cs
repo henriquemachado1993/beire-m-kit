@@ -1,4 +1,4 @@
-﻿using BeireMKit.Data.Interfaces;
+﻿using BeireMKit.Cache.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Text;

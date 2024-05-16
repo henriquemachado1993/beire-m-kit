@@ -1,5 +1,5 @@
-﻿using BeireMKit.Cache.Services;
-using BeireMKit.Data.Interfaces;
+﻿using BeireMKit.Cache.Interfaces;
+using BeireMKit.Cache.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeireMKit.Cache.Extensions

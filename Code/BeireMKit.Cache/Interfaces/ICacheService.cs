@@ -1,4 +1,4 @@
-﻿namespace BeireMKit.Data.Interfaces
+﻿namespace BeireMKit.Cache.Interfaces
 {
     public interface ICacheService
     {
