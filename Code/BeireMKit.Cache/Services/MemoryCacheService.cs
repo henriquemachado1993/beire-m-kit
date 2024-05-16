@@ -12,6 +12,11 @@ namespace BeireMKit.Cache.Services
             _memoryCache = memoryCache;
         }
 
+        public bool KeyExists(string key)
+        {
+            return _memoryCache.TryGetValue(key, out _);
+        }
+
         public T Get<T>(string key)
         {
             return _memoryCache.Get<T>(key);

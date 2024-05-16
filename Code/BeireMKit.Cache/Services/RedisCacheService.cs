@@ -14,6 +14,12 @@ namespace BeireMKit.Cache.Services
             _distributedCache = distributedCache;
         }
 
+        public bool KeyExists(string key)
+        {
+            byte[] value = _distributedCache.Get(key);
+            return value != null;
+        }
+
         public T Get<T>(string key)
         {
             var value = _distributedCache.GetString(key);
