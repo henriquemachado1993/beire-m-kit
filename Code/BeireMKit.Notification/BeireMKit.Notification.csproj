@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BeireMKit.Domain\BeireMKit.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="README.md">
       <PackagePath>\</PackagePath>
       <Pack>true</Pack>

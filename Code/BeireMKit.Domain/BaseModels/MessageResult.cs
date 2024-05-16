@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BeireMKit.Domain.Enums;
+﻿using BeireMKit.Domain.Enums;
 
 namespace BeireMKit.Domain.BaseModels
 {

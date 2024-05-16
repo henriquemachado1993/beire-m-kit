@@ -9,10 +9,20 @@ namespace BeireMKit.Notification.Extensions
         /// Configuring notification related services
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigureNotification(this IServiceCollection services)
+        public static IServiceCollection ConfigureNotification(this IServiceCollection services)
         {
-            //services.AddScoped(typeof(INotification), provider => provider.GetService(typeof(NotificationContext)));
-            services.AddScoped(typeof(INotification), typeof(Notification));
+            services.AddScoped<INotification, Notification>();
+            return services;
+        }
+
+        /// <summary>
+        /// Configuring notification context related services
+        /// </summary>
+        /// <param name="services"></param>
+        public static IServiceCollection ConfigureNotificationContext(this IServiceCollection services)
+        {
+            services.AddSingleton<NotificationContext>();
+            return services;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BeireMKit.Notification.Interfaces;
+﻿using BeireMKit.Domain.BaseModels;
+using BeireMKit.Notification.Interfaces;
 
 namespace BeireMKit.Notification
 {
@@ -21,29 +22,34 @@ namespace BeireMKit.Notification
             return notification;
         }
 
-        public bool HasNotifications(string key)
+        public bool HasMessages(string key)
         {
-            return _notifications.ContainsKey(key) && _notifications[key].HasNotifications;
+            return _notifications.ContainsKey(key) && _notifications[key].HasMessages;
         }
 
-        public IReadOnlyCollection<string> GetNotifications(string key)
+        public bool HasErrors(string key)
         {
-            return _notifications.ContainsKey(key) ? _notifications[key].Notifications : new List<string>();
+            return _notifications.ContainsKey(key) && _notifications[key].HasErrors;
         }
 
-        public void ClearNotifications(string key)
+        public IReadOnlyCollection<MessageResult> GetNotifications(string key)
+        {
+            return _notifications.ContainsKey(key) ? _notifications[key].Messages : new List<MessageResult>();
+        }
+
+        public void ClearMessages(string key)
         {
             if (_notifications.ContainsKey(key))
             {
-                _notifications[key].ClearNotifications();
+                _notifications[key].ClearMessages();
             }
         }
 
-        public void ClearAllNotifications()
+        public void ClearAllMessages()
         {
             foreach (var notification in _notifications.Values)
             {
-                notification.ClearNotifications();
+                notification.ClearMessages();
             }
         }
     }

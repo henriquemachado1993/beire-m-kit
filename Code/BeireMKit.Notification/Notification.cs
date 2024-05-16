@@ -1,33 +1,67 @@
-﻿using BeireMKit.Notification.Interfaces;
+﻿using BeireMKit.Domain.BaseModels;
+using BeireMKit.Domain.Enums;
+using BeireMKit.Notification.Interfaces;
 
 namespace BeireMKit.Notification
 {
     public class Notification : INotification
     {
-        private readonly List<string> _notifications;
+        private readonly List<MessageResult> _messages;
 
         public Notification()
         {
-            _notifications = new List<string>();
+            _messages = new List<MessageResult>();
         }
 
-        public bool HasNotifications => _notifications.Any();
+        public bool HasMessages => _messages.Any();
+        public bool HasErrors => _messages.Any(x => x.Type == MessageType.Error);
 
-        public IReadOnlyCollection<string> Notifications => _notifications.AsReadOnly();
+        public IReadOnlyCollection<MessageResult> Messages => _messages.AsReadOnly();
 
-        public void AddNotification(string message)
+        public void AddMessage(MessageResult message)
         {
-            _notifications.Add(message);
+            _messages.Add(message);
         }
 
-        public void AddNotifications(IEnumerable<string> messages)
+        public void AddMessages(IEnumerable<MessageResult> messages)
         {
-            _notifications.AddRange(messages);
+            _messages.AddRange(messages);
         }
 
-        public void ClearNotifications()
+        public void AddSuccess(string message, string? key = null, string? typeCustom = null)
         {
-            _notifications.Clear();
+            AddMessage(message, MessageType.Success, key, typeCustom);
+        }
+
+        public void AddError(string message, string? key = null, string? typeCustom = null)
+        {
+            AddMessage(message, MessageType.Error, key, typeCustom);
+        }
+
+        public void AddInfo(string message, string? key = null, string? typeCustom = null)
+        {
+            AddMessage(message, MessageType.Info, key, typeCustom);
+        }
+
+        public void AddWarning(string message, string? key = null, string? typeCustom = null)
+        {
+            AddMessage(message, MessageType.Warning, key, typeCustom);
+        }
+
+        public void ClearMessages()
+        {
+            _messages.Clear();
+        }
+
+        private void AddMessage(string message, MessageType type, string? key = null, string? typeCustom = null)
+        {
+            _messages.Add(new MessageResult()
+            {
+                Key = key ?? Guid.NewGuid().ToString(),
+                Message = message,
+                Type = type,
+                TypeCustom = typeCustom
+            });
         }
     }
 }
