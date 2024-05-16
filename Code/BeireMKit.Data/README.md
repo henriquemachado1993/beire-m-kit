@@ -1,62 +1,85 @@
+
 # BeireMKit Data
-A biblioteca BeireMKit Data foi desenvolvida para facilitar a interação com banco de dados, utilizando os padrões Repository, UnitOfWork e um BaseMap para OnModelCreating. Esta documentação vai te guiar sobre como usar as funcionalidades oferecidas pela biblioteca.
+The BeireMKit Data library was developed to facilitate interaction with databases, using the Repository, UnitOfWork and a BaseMap for OnModelCreating standards. This documentation will guide you on how to use the functionalities offered by the library.
 
-## Funcionalidades
+## Features
+1. manipulate data from the database in a simplified way.
+2. Perform queries.
+3. Control transactions.
 
-1. Manipular dados do banco de dados de forma simplificada.
-2. Realizar consultas.
-3. Controlar transações.
+## Requirements
+Make sure you have installed the .NET Core 6 SDK on your machine before you start.
 
-## Pré-requisitos
-Certifique-se de ter instalado o .NET Core 6 SDK em sua máquina antes de começar.
-
-## Como Usar
-* Adicionar o serviço do repositório no Startup
-	* No método ConfigureServices da classe Startup, adicione o serviço do repositório usando o método ConfigureRepository(): 
-    ```
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.ConfigureRepository();
-    }
-    ```
+## How to use
+* Add the repository service to Startup
+	* In the ConfigureServices method of the Startup class, add the repository service using the ConfigureRepository() method: 
+	    ```
+	    public void ConfigureServices(IServiceCollection services)
+	    {
+	        services.ConfigureRepository();
+	    }
+	    ```
     
-* Configurar o DbContext
-	* Adicionar IBaseContext ao seu contexto: Certifique-se de que sua classe de contexto (YourContext) implementa a interface IBaseDbContext.
-    ```
-    public class YourContext : DbContext, IBaseDbContext
-    {
-        // Seu código aqui
-    }
-    ```
-	* Adicionar injeção de dependência: No método ConfigureServices da classe Startup, adicione a injeção de dependência para o seu contexto:
+* Configuring DbContext
+	* Add IBaseContext to your context: Make sure that your context class (YourContext) implements the IBaseDbContext interface. 
+	    ```
+	    public class YourContext : DbContext, IBaseDbContext
+	    {
+	        protected override void OnModelCreating(ModelBuilder builder)
+			{
+			    base.OnModelCreating(builder);
+			    builder.ApplyConfiguration(new EntityMap());
+			}
+	    }
+	    ```
+    * Add YourMap.
+	    ```
+	    using BeireMKit.Data.Map;
+		using Microsoft.EntityFrameworkCore;
+		using Microsoft.EntityFrameworkCore.Metadata.Builders;
+		
+	    public class EntityMap : MapBase<Entity>
+		{
+		    public override void Configure(EntityTypeBuilder<Entity> builder)
+		    {
+		        base.Configure(builder);
+		        builder.ToTable("TableName");
+		    }
+		}
+	    ```
+	* Add dependency injection: In the ConfigureServices method of the Startup class, add the dependency injection for your context:
 	
-    ```
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddScoped<IBaseDbContext, YourContext>();
-    }
-    ```
-    * Exemplo de uso:
-    ```
-    public class Service : IService
-    {
-        private readonly IUnitOfWork _uow;
-        private readonly IRepository<Entity> _repository;
+	    ```
+	    public void ConfigureServices(IServiceCollection services)
+	    {
+	        services.AddScoped<IBaseDbContext, YourContext>();
+	    }
+	    ```
+    * Usage example
+	    ```
+	    using BeireMKit.Data.Interfaces;
+		using BeireMKit.Domain.BaseModels;
+		using BeireMKit.Domain.Extensions;
+		
+	    public class Service : IService
+	    {
+	        private readonly IUnitOfWork _uow;
+	        private readonly IRepository<Entity> _repository;
 
-        public Service(
-            IUnitOfWork uow,
-            IRepository<Entity> repository,
-            )
-        {
-            _uow = uow;
-            _repository = repository;
-        }
+	        public Service(
+	            IUnitOfWork uow,
+	            IRepository<Entity> repository,
+	            )
+	        {
+	            _uow = uow;
+	            _repository = repository;
+	        }
 
-        public BaseResult<Entity> Add(Entity entity)
-        {
-            var result = _repository.Add(entity);
-            _uow.Commit();
-            return BaseResult<Entity>.CreateValidResult(result);
-        }
-    }
-    ```
+	        public BaseResult<Entity> Add(Entity entity)
+	        {
+	            var result = _repository.Add(entity);
+	            _uow.Commit();
+	            return BaseResult<Entity>.CreateValidResult(result);
+	        }
+	    }
+	    ```

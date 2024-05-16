@@ -1,27 +1,28 @@
-
 # BeireMKit Cache
-A biblioteca BeireMKit Cache foi desenvolvida para facilitar a utilização de cache
+The BeireMKit Cache library was developed to facilitate the use of cache
 
-## Funcionalidades
+## Features
+1. Cache in memory
+2. Caching with Redis
 
-1. Cache em memória
-2. Cache com Redis
+## Requeriments
+Make sure you have installed the .NET Core 6 SDK on your machine before you start.
 
-## Pré-requisitos
-Certifique-se de ter instalado o .NET Core 6 SDK em sua máquina antes de começar.
-
-## Como Usar
-* Adicionar o serviço do repositório no Startup
-	* No método ConfigureServices da classe Startup, adicione o serviço de cache com memória/redis: 
+## How to use
+* Add the cache service to Startup
+	* In the ConfigureServices method of the Startup class, add the memory/redis service: 
     ```
     public void ConfigureServices(IServiceCollection services)
     {
         services.ConfigureMemoryCache();
+        // or
         services.ConfigureRedisCache();
     }
     ```
     
-## Exemplo de uso:
+## Usage example
+	using BeireMKit.Cache.Interfaces;
+	
     public class Service : IService
     {
         private readonly ICacheService _cache;
@@ -41,11 +42,10 @@ Certifique-se de ter instalado o .NET Core 6 SDK em sua máquina antes de começ
 
         public BaseResult<Entity> Get(int id)
         {
-            var result = _cache.Get<Entity>("key");
-            if(result != null)
-                return BaseResult<Entity>.CreateValidResult(result);
+            if(_cache.KeyExists(_cacheKey))
+                return BaseResult<Entity>.CreateValidResult(_cache.Get<Entity>("key"));
             
-            result = _repository.Get(id);
+            var result = _repository.Get(id);
  
             _cache.Set<Entity>("key", result, TimeSpan.FromSeconds(60))
  
