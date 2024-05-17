@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Domain", "BeireMK
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Notification", "BeireMKit.Notification\BeireMKit.Notification.csproj", "{CA40C25C-52CA-4B0B-BB66-282E9C853064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeireMKit.Cache", "BeireMKit.Cache\BeireMKit.Cache.csproj", "{FCA43798-CBE6-4D2B-900C-722650A14E0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Cache", "BeireMKit.Cache\BeireMKit.Cache.csproj", "{FCA43798-CBE6-4D2B-900C-722650A14E0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeireMKit.Authetication", "BeireMKit.Authetication\BeireMKit.Authetication.csproj", "{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{FCA43798-CBE6-4D2B-900C-722650A14E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCA43798-CBE6-4D2B-900C-722650A14E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCA43798-CBE6-4D2B-900C-722650A14E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
