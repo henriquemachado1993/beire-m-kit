@@ -16,8 +16,8 @@ Make sure you have installed the .NET Core 6 SDK on your machine before you star
     ```
     public void ConfigureServices(IServiceCollection services)
     {
-        services.ConfigureNotification();
-		services.ConfigureNotificationContext();
+    	services.ConfigureNotification();
+	services.ConfigureNotificationContext();
     }
     ```
  ## Usage example
@@ -44,7 +44,7 @@ Make sure you have installed the .NET Core 6 SDK on your machine before you star
 
 	    public void Delete(int? id)
 	    {
-			// Types
+		// Types
 	        _notification.AddSuccess("deletion success", "key to identifying msg", "success-custom");
 	        _notification.AddError("deletion error", "key to identifying msg", "error-custom");
 	        _notification.AddInfo("deletion info", "key to identifying msg", "info-custom");
@@ -64,7 +64,7 @@ Make sure you have installed the .NET Core 6 SDK on your machine before you star
 	[HttpDelete("delete/{id}")]
 	public IActionResult Delete([FromRoute] int id)
 	{
-		_service.Delete(id);
+	    _service.Delete(id);
 		
 	    if (_notification.HasMessages)
 	    {
