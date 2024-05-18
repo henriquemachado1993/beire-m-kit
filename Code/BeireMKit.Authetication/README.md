@@ -28,7 +28,7 @@ Make sure you have installed the .NET Core 6 SDK on your machine before you star
     public void ConfigureServices(IServiceCollection services)
     {
 		var jwtSetthings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-        builder.Services.ConfigureJwtAuthentication(jwtSetthings);
+        	builder.Services.ConfigureJwtAuthentication(jwtSetthings);
 		builder.Services.ConfigureJwtServices();
     }
     ```
