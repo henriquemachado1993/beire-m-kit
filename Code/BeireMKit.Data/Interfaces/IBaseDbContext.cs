@@ -1,5 +1,4 @@
-﻿using BeireMKit.Domain.Entity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BeireMKit.Data.Interfaces

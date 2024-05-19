@@ -1,4 +1,5 @@
 ﻿using BeireMKit.Domain.Enums;
+using System.Net;
 
 namespace BeireMKit.Domain.BaseModels
 {
@@ -12,6 +13,7 @@ namespace BeireMKit.Domain.BaseModels
             Data = data;
         }
 
+        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
         public T? Data { get; set; }
         public List<MessageResult> Messages { get; } = new List<MessageResult>();
         public string? Token { get; set; }
@@ -30,24 +32,27 @@ namespace BeireMKit.Domain.BaseModels
             return result;
         }
 
-        public static BaseResult<T> CreateInvalidResult(T? model = default, string? message = null, Exception? exception = null)
+        public static BaseResult<T> CreateInvalidResult(T? model = default, string? message = null, Exception? exception = null, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
         {
             var result = new BaseResult<T> { Data = model };
             result.AddError(message, exception);
+            result.StatusCode = statusCode;
             return result;
         }
 
-        public static BaseResult<T> CreateInvalidResult(T? model = default, List<MessageResult>? messages = null)
+        public static BaseResult<T> CreateInvalidResult(T? model = default, List<MessageResult>? messages = null, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
         {
             var result = new BaseResult<T> { Data = model };
             result.AddError(messages);
+            result.StatusCode = statusCode;
             return result;
         }
 
-        public static BaseResult<T> CreateInvalidResult(List<MessageResult> messages)
+        public static BaseResult<T> CreateInvalidResult(List<MessageResult> messages, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
         {
             var result = new BaseResult<T> { Data = default };
             result.AddError(messages);
+            result.StatusCode = statusCode;
             return result;
         }
 

@@ -5,11 +5,15 @@ using BeireMKit.Data.Contexts;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BeireMKit.Data.Interfaces.MongoDB;
+using BeireMKit.Data.Repositories.MongoDB;
 
 namespace BeireMKit.Data.Extensions
 {
     public static class ServiceCollections
     {
+        #region Generic repository for relational databases
+
         public static IServiceCollection ConfigureRepository(this IServiceCollection services)
         {
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
@@ -31,5 +35,17 @@ namespace BeireMKit.Data.Extensions
             services.AddScoped(typeof(IBaseDbContext), typeof(BaseDbContextIndentity<TContext, TUser>));
             return services;
         }
+
+        #endregion
+
+        #region Generic repository for non-relational databases
+
+        public static IServiceCollection ConfigureMongoDbRepository(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+            return services;
+        }
+
+        #endregion
     }
 }
