@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BeireMKit.Data.Interfaces;
+﻿using BeireMKit.Data.Interfaces;
 using BeireMKit.Domain.BaseModels;
 using BeireMKit.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
+using SharpCompress.Common;
 
 namespace BeireMKit.Data.Repositories
 {
@@ -40,12 +41,24 @@ namespace BeireMKit.Data.Repositories
 
         public T Update(T entity)
         {
-            if (entity != null)
-            {
-                _context.Set<T>().Attach(entity);
-                _context.Entry(entity).State = EntityState.Modified;
-            }
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            _context.Set<T>().Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+
             return entity;
+        }
+
+        public Task<T> UpdateAsync(T entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            _context.Set<T>().Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+
+            return Task.FromResult(entity);
         }
 
         public void Delete(int id)
@@ -55,10 +68,27 @@ namespace BeireMKit.Data.Repositories
                 _context.Set<T>().Remove(_entity);
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            var _entity = await GetByIdAsync(id);
+            if (_entity != null)
+                _context.Set<T>().Remove(_entity);
+
+            await Task.CompletedTask;
+        }
+
         public void Delete(T entity)
         {
             if (entity != null)
                 _context.Set<T>().Remove(entity);
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            if (entity != null)
+                _context.Set<T>().Remove(entity);
+
+            await Task.CompletedTask;
         }
 
         public void DeleteMultiple(ICollection<T> listEntity)
@@ -67,24 +97,53 @@ namespace BeireMKit.Data.Repositories
                 _context.Set<T>().RemoveRange(listEntity);
         }
 
+        /// <summary>
+        /// navigation: "navigation1,navigation2"
+        /// </summary>
         public T GetById(int id, string navigation = "")
         {
-            IQueryable<T> result = _context.Set<T>().Where(x => x.Id == id).AsNoTracking();
+            IQueryable<T> filteredQuery = _context.Set<T>().Where(x => x.Id == id).AsNoTracking();
 
-            if (result == null || !result.Any())
+            if (filteredQuery == null || !filteredQuery.Any())
                 return null;
 
             if (!string.IsNullOrEmpty(navigation))
-                result = navigation.Split(',').Aggregate(result, (current, nav) => current.Include(nav));
+            {
+                var navigations = navigation.Split(',')?.ToList();
+                IncludeNavigation(navigations, ref filteredQuery);
+            }
+            
+            return filteredQuery.FirstOrDefault();
+        }
 
-            return result.FirstOrDefault();
+        public async Task<T?> GetByIdAsync(int id, string navigation = "")
+        {
+            IQueryable<T> filteredQuery = _context.Set<T>().Where(x => x.Id == id).AsNoTracking();
+
+            if (filteredQuery == null || !filteredQuery.Any())
+                return null;
+
+            if (!string.IsNullOrEmpty(navigation))
+            {
+                var navigations = navigation.Split(',')?.ToList();
+                IncludeNavigation(navigations, ref filteredQuery);
+            }
+
+            return await filteredQuery.FirstOrDefaultAsync();
         }
 
         public int GetCount(QueryCriteria<T> query = null)
         {
             query ??= new QueryCriteria<T>();
-            query.Expression ??= x => x.Id != 0;
+            query.Expression ??= x => true;
             return _context.Set<T>().Count(query.Expression);
+        }
+
+        public async Task<int> GetCountAsync(QueryCriteria<T> query = null)
+        {
+            query ??= new QueryCriteria<T>();
+            query.Expression ??= x => true;
+            return await _context.Set<T>().CountAsync(query.Expression);
         }
 
         public IQueryable<T> GetFiltered(QueryCriteria<T> query)
@@ -92,7 +151,7 @@ namespace BeireMKit.Data.Repositories
             if (query == null)
                 return Enumerable.Empty<T>().AsQueryable();
 
-            query.Expression ??= x => x.Id != 0;
+            query.Expression ??= x => true;
             query.OrderBy ??= x => x.Id;
 
             var filteredQuery = _context.Set<T>()
@@ -104,9 +163,7 @@ namespace BeireMKit.Data.Repositories
             else
                 filteredQuery = filteredQuery.OrderByDescending(query.OrderBy);
 
-            if (query.Navigation != null && query.Navigation.Any())
-                foreach (var nav in query.Navigation)
-                    filteredQuery = filteredQuery.Include(nav);
+            IncludeNavigation(query.Navigation, ref filteredQuery);
 
             return filteredQuery;
         }
@@ -116,7 +173,7 @@ namespace BeireMKit.Data.Repositories
             if (query == null)
                 return Enumerable.Empty<T>().AsQueryable();
 
-            query.Expression ??= x => x.Id != 0;
+            query.Expression ??= x => true;
             query.OrderBy ??= x => x.Id;
 
             int skip = (query.Offset - 1) * query.Limit;
@@ -130,15 +187,38 @@ namespace BeireMKit.Data.Repositories
             else
                 filteredQuery = filteredQuery.OrderByDescending(query.OrderBy);
 
-            if (query.Navigation != null && query.Navigation.Any())
-            {
-                foreach (var nav in query.Navigation)
-                {
-                    filteredQuery = filteredQuery.Include(nav);
-                }
-            }
-
+            IncludeNavigation(query.Navigation, ref filteredQuery);
+            
             return filteredQuery.Skip(skip).Take(query.Limit);
+        }
+
+        private void IncludeNavigation(List<string>? navigations, ref IQueryable<T> query)
+        {
+            if (navigations == null || !navigations.Any())
+                return;
+
+            foreach (var navigation in navigations)
+            {
+                var properties = navigation.Split('.');
+                IQueryable<T> includeQuery = query.Include(properties[0]);
+
+                for (int i = 1; i < properties.Length; i++)
+                {
+                    includeQuery = ApplyThenInclude(includeQuery, properties[i]);
+                }
+
+                query = includeQuery;
+            }
+        }
+
+        private IQueryable<T> ApplyThenInclude(IQueryable<T> query, string navigationProperty)
+        {
+            var method = typeof(EntityFrameworkQueryableExtensions)
+                .GetMethods()
+                .First(m => m.Name == "ThenInclude" && m.GetParameters().Length == 2)
+                .MakeGenericMethod(typeof(T), typeof(object));
+
+            return (IQueryable<T>)method.Invoke(null, new object[] { query, navigationProperty });
         }
     }
 }

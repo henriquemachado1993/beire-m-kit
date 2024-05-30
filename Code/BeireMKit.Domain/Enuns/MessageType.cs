@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BeireMKit.Domain.Enums
+﻿namespace BeireMKit.Domain.Enums
 {
     public enum MessageType
     {
