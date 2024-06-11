@@ -17,9 +17,9 @@ namespace BeireMKit.Data.Repositories
             _context.SaveChanges();
         }
 
-        public async Task CommitAsync()
+        public async Task CommitAsync(CancellationToken token = default)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(token);
         }
 
         public void Dispose()

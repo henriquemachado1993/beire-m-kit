@@ -10,7 +10,7 @@
         /// <summary>
         /// Confirm async transaction
         /// </summary>
-        Task CommitAsync();
+        Task CommitAsync(CancellationToken token = default);
 
         /// <summary>
         /// Release context resources

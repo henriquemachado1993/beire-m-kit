@@ -2,7 +2,6 @@
 using BeireMKit.Domain.BaseModels;
 using BeireMKit.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
-using SharpCompress.Common;
 
 namespace BeireMKit.Data.Repositories
 {
@@ -18,7 +17,7 @@ namespace BeireMKit.Data.Repositories
 
         public T Add(T entity) => _context.Set<T>().Add(entity ?? throw new ArgumentNullException(nameof(entity))).Entity;
 
-        public async Task<T> AddAsync(T entity) => (await _context.Set<T>().AddAsync(entity ?? throw new ArgumentNullException(nameof(entity))).ConfigureAwait(false)).Entity;
+        public async Task<T> AddAsync(T entity, CancellationToken token = default) => (await _context.Set<T>().AddAsync(entity ?? throw new ArgumentNullException(nameof(entity)), token).ConfigureAwait(false)).Entity;
 
         public ICollection<T> AddMultiple(ICollection<T> listEntity)
         {
@@ -30,12 +29,12 @@ namespace BeireMKit.Data.Repositories
             return listEntity;
         }
 
-        public async Task<ICollection<T>> AddMultipleAsync(ICollection<T> listEntity)
+        public async Task<ICollection<T>> AddMultipleAsync(ICollection<T> listEntity, CancellationToken token = default)
         {
             if (listEntity == null || !listEntity.Any())
                 throw new ArgumentNullException(nameof(listEntity));
 
-            await _context.Set<T>().AddRangeAsync(listEntity).ConfigureAwait(false);
+            await _context.Set<T>().AddRangeAsync(listEntity, token).ConfigureAwait(false);
             return listEntity;
         }
 
@@ -50,17 +49,6 @@ namespace BeireMKit.Data.Repositories
             return entity;
         }
 
-        public Task<T> UpdateAsync(T entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            _context.Set<T>().Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-
-            return Task.FromResult(entity);
-        }
-
         public void Delete(int id)
         {
             var _entity = GetById(id);
@@ -68,27 +56,10 @@ namespace BeireMKit.Data.Repositories
                 _context.Set<T>().Remove(_entity);
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            var _entity = await GetByIdAsync(id);
-            if (_entity != null)
-                _context.Set<T>().Remove(_entity);
-
-            await Task.CompletedTask;
-        }
-
         public void Delete(T entity)
         {
             if (entity != null)
                 _context.Set<T>().Remove(entity);
-        }
-
-        public async Task DeleteAsync(T entity)
-        {
-            if (entity != null)
-                _context.Set<T>().Remove(entity);
-
-            await Task.CompletedTask;
         }
 
         public void DeleteMultiple(ICollection<T> listEntity)
@@ -116,7 +87,7 @@ namespace BeireMKit.Data.Repositories
             return filteredQuery.FirstOrDefault();
         }
 
-        public async Task<T?> GetByIdAsync(int id, string navigation = "")
+        public async Task<T?> GetByIdAsync(int id, string navigation = "", CancellationToken token = default)
         {
             IQueryable<T> filteredQuery = _context.Set<T>().Where(x => x.Id == id).AsNoTracking();
 
@@ -129,7 +100,7 @@ namespace BeireMKit.Data.Repositories
                 IncludeNavigation(navigations, ref filteredQuery);
             }
 
-            return await filteredQuery.FirstOrDefaultAsync();
+            return await filteredQuery.FirstOrDefaultAsync(token);
         }
 
         public int GetCount(QueryCriteria<T> query = null)
@@ -139,11 +110,11 @@ namespace BeireMKit.Data.Repositories
             return _context.Set<T>().Count(query.Expression);
         }
 
-        public async Task<int> GetCountAsync(QueryCriteria<T> query = null)
+        public async Task<int> GetCountAsync(QueryCriteria<T> query = null, CancellationToken token = default)
         {
             query ??= new QueryCriteria<T>();
             query.Expression ??= x => true;
-            return await _context.Set<T>().CountAsync(query.Expression);
+            return await _context.Set<T>().CountAsync(query.Expression, token);
         }
 
         public IQueryable<T> GetFiltered(QueryCriteria<T> query)
