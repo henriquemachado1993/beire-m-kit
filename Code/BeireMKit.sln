@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Notification", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Cache", "BeireMKit.Cache\BeireMKit.Cache.csproj", "{FCA43798-CBE6-4D2B-900C-722650A14E0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeireMKit.Authetication", "BeireMKit.Authetication\BeireMKit.Authetication.csproj", "{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeireMKit.Authetication", "BeireMKit.Authetication\BeireMKit.Authetication.csproj", "{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeireMKit.Infra", "BeireMKit.Infra\BeireMKit.Infra.csproj", "{F06210D1-89F8-4685-9FDF-5B5CFDD20424}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F04C2DB9-0CF6-42AB-BFCD-2533E7D2F907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F06210D1-89F8-4685-9FDF-5B5CFDD20424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06210D1-89F8-4685-9FDF-5B5CFDD20424}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06210D1-89F8-4685-9FDF-5B5CFDD20424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F06210D1-89F8-4685-9FDF-5B5CFDD20424}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
