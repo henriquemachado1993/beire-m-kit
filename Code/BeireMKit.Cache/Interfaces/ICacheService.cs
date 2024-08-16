@@ -2,9 +2,13 @@
 {
     public interface ICacheService
     {
-        bool KeyExists(string key);
-        T Get<T>(string key);
-        void Set<T>(string key, T value, TimeSpan expiration);
-        void Remove(string key);
+        Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) 
+            where T : class;
+        Task<T> GetAsync<T>(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default, TimeSpan expiration = default)
+            where T : class;
+        Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken cancellationToken = default)
+            where T : class;
+        Task RemoveAsync(string key, CancellationToken cancellationToken = default);
+        Task RemoveByPrefixAsync(string prefixKey, CancellationToken cancellationToken = default);
     }
 }

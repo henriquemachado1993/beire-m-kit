@@ -1,45 +1,46 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.7</Version>
-    <Authors>Henrique Machado</Authors>
-    <Company>BeireM</Company>
-    <RepositoryUrl>https://github.com/henriquemachado1993/beire-m-kit</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageIcon>logo.png</PackageIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>2.0.1</Version>
+		<Authors>Henrique Machado</Authors>
+		<Company>BeireM</Company>
+		<RepositoryUrl>https://github.com/henriquemachado1993/beire-m-kit</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>BeireMKit Cache is a library designed to simplify the use of caching in .NET core applications, supporting both in-memory caching and distributed caching via Redis.</Description>
+		<PackageIcon>logo.png</PackageIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\Docs\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\Docs\logo.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\Docs\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\Docs\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.10" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.10" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BeireMKit.Data\BeireMKit.Data.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BeireMKit.Data\BeireMKit.Data.csproj" />
+	</ItemGroup>
 
 </Project>
