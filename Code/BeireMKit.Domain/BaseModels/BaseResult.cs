@@ -89,7 +89,7 @@ namespace BeireMKit.Domain.BaseModels
             }
         }
 
-        public void AddError(string? message, string? typeCustom = null)
+        public void AddError(string message, string typeCustom)
         {
             if (!string.IsNullOrWhiteSpace(message))
             {
